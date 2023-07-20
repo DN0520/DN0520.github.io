@@ -29,7 +29,7 @@ MuleSoftを使用したアプリケーション開発の手順を一覧したも
 
 1. DX後の新しい業務フローやデータフローを用意します。
 2. 業務フロー、データフローからアプリの基本的な流れを把握してMuleSoftのイベントプロセッサごとの機能を組合わせて下図のようなフローを作成してください。  
-   ※右図は基本的なMuleアプリのオンラインおよびバッチプロセスの基本構造になっています。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design2.jpg)
+   ※右図は基本的なMuleアプリのオンラインおよびバッチプロセスの基本構造になっています。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design2.jpg)
 3. ここでAPIのエンドポイントや各コンポーネントのネーミングを確定させてください。
 4. 上図は個々のAPIのデザイン図になるが、下図ではMuleSoftのAPI-LED POLICYにあわせた3層構造を明らかにします。
 5. この図をもとにRAMLを作成するので必要項目はここで押さえます。
@@ -40,7 +40,7 @@ MuleSoftを使用したアプリケーション開発の手順を一覧したも
 
 # 2.項目定義
 
-1. 下表を参考に項目定義書を作成します。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design3.jpg)
+1. 下表を参考に項目定義書を作成します。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design3.jpg)
 2. 作成された項目定義をもとに以下のコンポーネントを作成します。
 
 #### RAML用example
@@ -94,7 +94,7 @@ CREATE TABLE employees (
 
 # 3.画面HTML作成
 
-下の画面を基本的な画面構造と定義し、ベースとなるHTMLを共有します。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design4.jpg)
+下の画面を基本的な画面構造と定義し、ベースとなるHTMLを共有します。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design4.jpg)
 
 当画面はモバイルを意識した縦長の画面になっており、明細の一覧を下段に出力し、前段は下段の明細データを使用しメッセージ性を強調したグラフになります。このHTMLをChat-GPTにベースHTMLとして与え、これ改修を加えるのがシンプルかつ効率の良い画面開発だと考えます。ただし、チームでは別のフレームワークでの画面開発を検討しているのでこれは2023/7時点のソリューションと考えてください。
 
@@ -214,7 +214,7 @@ CREATE TABLE employees (
 1. **MySQLのインストール**: 下記のサイトよりMySQLをインストールします。
    [https://dev.mysql.com/doc/refman/8.0/ja/windows-installation.html](https://dev.mysql.com/doc/refman/8.0/ja/windows-installation.html)
 
-2. **MySQL ShellとWorkbenchの準備**: MySQL ShellとWorkbenchを準備し、Workbenchで以下の手順を実施します。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design5.jpg)
+2. **MySQL ShellとWorkbenchの準備**: MySQL ShellとWorkbenchを準備し、Workbenchで以下の手順を実施します。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design5.jpg)
 
 3. **データベースとテーブルの作成**:
    
@@ -266,7 +266,7 @@ MuleSoftのAnypoint PlatformのDesign CenterではAPIの設計とモデリング
 
 6. **APIのテスト**: 右側の"Mocking service"タブを使用して、APIのテストを行います。これはAPIが期待通りに動作しているかを確認するのに役立ちます。
 
-7. **APIの公開**: APIが完全に設計され、テストが成功したら、APIを公開します。"Publish"ボタンをクリックするとAPI PortalにAPIが公開されます。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design6.jpg)
+7. **APIの公開**: APIが完全に設計され、テストが成功したら、APIを公開します。"Publish"ボタンをクリックするとAPI PortalにAPIが公開されます。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design6.jpg)
 
 ---
 
@@ -294,7 +294,7 @@ MuleSoftのAnypoint PlatformのDesign CenterではAPIの設計とモデリング
 
 1. `Policies`セクションに戻り、`SLA-Based policies`カテゴリーを開きます。
 2. `Apply New Policy`をクリックし、SLAポリシーを選択します。
-3. SLAポリシーの詳細を設定し、`Apply`をクリックします。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design7.jpg)
+3. SLAポリシーの詳細を設定し、`Apply`をクリックします。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design7.jpg)
 
 ---
 
@@ -330,7 +330,7 @@ MUnitと呼ばれる単体テストフレームワークを利用して、APIの
 
 Anypoint Studioのデバッガを使用して、APIの問題を特定し、修正することができます。
 
-これらは一部の主な設定で、その他にも多くの高度な設定やカスタマイズが可能です。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design8.jpg)
+これらは一部の主な設定で、その他にも多くの高度な設定やカスタマイズが可能です。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design8.jpg)
 
 ---
 
@@ -350,5 +350,5 @@ Anypoint Studioから直接CloudHubにデプロイするためには、次のス
 7. 必要な情報（アプリケーション名、デプロイメント先のリージョン、ランタイムバージョンなど）を入力し、先ほどエクスポートした.jarファイルをアップロードします。
 8. 最後に`Deploy Application`ボタンをクリックしてデプロイを完了します。
 
-この操作が成功すると、CloudHub上にAPIがデプロイされ、インターネット経由でアクセスできるようになります。CloudHubでデプロイしたアプリケーションは、`{your-application-name}.cloudhub.io`というURLでアクセスできます。そのため、HTMLファイルのAPIエンドポイントURLをこの新しいURLに更新する必要があります。![Any description here](C:\Users\li3930\Desktop\A.MuleSoft\devgideMD\design9.jpg)
+この操作が成功すると、CloudHub上にAPIがデプロイされ、インターネット経由でアクセスできるようになります。CloudHubでデプロイしたアプリケーションは、`{your-application-name}.cloudhub.io`というURLでアクセスできます。そのため、HTMLファイルのAPIエンドポイントURLをこの新しいURLに更新する必要があります。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design9.jpg)
 
