@@ -1,7 +1,7 @@
 # MuleSoftアプリ開発手順全容
 
 MuleSoftを使用したアプリケーション開発の手順を一覧したものです。  
-なお、下記はAnypoint platform上にFlowDesignerがないことを前提に作成しています。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design1.jpg)
+なお、下記はAnypoint platform上にFlowDesignerがないことを前提に作成しています。![MuleSoftアプリ開発手順](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design1.jpg)
 
 1. 仕様定義
 2. 項目定義
