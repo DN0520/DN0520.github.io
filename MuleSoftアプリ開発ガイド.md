@@ -40,7 +40,8 @@ MuleSoftを使用したアプリケーション開発の手順を一覧したも
 
 # 2.項目定義
 
-1. 下表を参考に項目定義書を作成します。![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design3.jpg)
+1. 下表を参考に項目定義書を作成します。                                                                                                                             
+   ![Any description here](https://github.com/DN0520/DEC-Mule/blob/master/Desktop/A.MuleSoft/devgideMD/design3.jpg)
 2. 作成された項目定義をもとに以下のコンポーネントを作成します。
 
 #### RAML用example
