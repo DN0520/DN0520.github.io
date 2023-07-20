@@ -1,8 +1,8 @@
 # MuleSoftアプリ開発手順全容
 
 MuleSoftを使用したアプリケーション開発の手順を一覧したものです。  
-なお、右記はAnypoint platform上にFlowDesignerがないことを前提に作成しています。
-
+なお、右図はAnypoint platform上にFlowDesignerがないことを前提に作成しています。
+　　(※右図はクリックすると拡大します）
 1. 仕様定義
 2. 項目定義
 3. 画面HTMLフォームの作成
