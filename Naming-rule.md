@@ -1,12 +1,11 @@
 MULEアプリ・ネーミングルール
 
-| コンポーネント       | 説明                                      | 例                                          |
-| ------------------- | --------------------------------------- | ------------------------------------------ |
-| プロジェクト名      | プロジェクトの目的や目標を表現　　        | `PersonalBudjetManagement`                      |
-| API名       　　　　| xxxxx-xxxxx--api 全小文字  APIの機能を表現したもの　　　　　         | `personal-budget-api`                      |
-| 変数名          | 変数が何を保持するのかを明示。小文字で始まる                 | `orderDate`                                |
-| 定数名          | 定数が何を表すのかを明示。全て大文字で、単語間にアンダースコアを使用     | `MAX_ORDER_QUANTITY`                       |
-| エンドポイント名   | HTTP, JMS, FTPなどのエンドポイントの名前も考慮         | `/personal-budget:`                   |
-| FlowとSubflow | それぞれのFlowとSubflowの役割を明確にする名前が必要        | `processOrderFlow`, `validateOrderSubflow` |
-| エラーハンドラー名         | デフォルト以外の例外戦略を作成する場合、それらを識別する名前が必要      | `customErrorHandler`                       |
-| データWeave変換   | 入力と出力の形式に基づいて変換の名前を設定                  | `xmlToJsonTransform`                       |
+| コンポーネント | 説明 | ケース | 例 |
+| --- | --- | --- | --- |
+| プロジェクト名 | プロジェクトの目的や目標を表現 | アッパーキャメル型式 | `PersonalBudjetManagement` |
+| API名 | xxxxx-xxxxx--api 全小文字 APIの機能を表現したもの。 | ケバブ型式 | `personal-budget-api` |
+| 項目名・変数名 | 項目および変数が何を保持するのかを明示。小文字で始まり計算等に使うので | スネークケース | `order_date`, `trx_date` |
+| エンドポイント名 | 小文字の名詞を使用する。2名詞合わせる場合は | ケバブ型式 | `/users`, `/account`, `/personal-budget` |
+| FlowとSubflow | それぞれのFlowとSubflowの役割を明確にする名前が必要 | ローワーキャメルケース | `processOrderFlow`, `validateOrderSubflow` |
+| エラーハンドラー名 | デフォルト以外の例外戦略を作成する場合、それらを識別する名前が必要 | ローワーキャメルケース | `customErrorHandler` |
+| データWeave変換 | 入力と出力の形式に基づいて変換の名前を設定 | ローワーキャメルケース | `xmlToJsonTransform` |
