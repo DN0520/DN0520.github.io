@@ -1,0 +1,185 @@
+<<!DOCTYPE html>
+<html>
+<head>
+  <title>【キャッシュフローグラフ】</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .content {
+      /* no flex display */
+    }
+
+    table {
+      width: 60%;
+      border-collapse: collapse;
+    }
+
+    .chart-container {
+      width: 40%;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* 追加：金額のテーブルデータを右詰めにする */
+    td.amount {
+      text-align: right;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<body>
+  <h2 id="header">お客様入出金明細</h2>
+
+  <!-- 入力フィールドとボタンを追加 -->
+  <input type="text" id="accountNumber" placeholder="お客様口座番号を入力">
+  <button onclick="fetchData(document.getElementById('accountNumber').value)">データ取得</button>
+
+  <div class="content">
+    <div id="chart-container" class="chart-container"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>入出金日付</th>
+          <th>入出金費目</th>
+          <th>金額</th>
+          <th>入金/出金</th>
+        </tr>
+      </thead>
+      <tbody id="data">
+        <!-- APIから取得したデータを動的に描画します -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // 日付をYYYY/MM/DDの形式に変換する関数
+    //function formatDate(dateStr) {
+    //  return dateStr.split('-').join('/');
+   // }
+   // 日付をYYYY/MM/DDの形式に変換する関数
+    function formatDate(dateStr) {
+     return dateStr.slice(0, 4) + '/' + dateStr.slice(4, 6) + '/' + dateStr.slice(6, 8);
+    }
+
+    // 金額を３桁ごとにカンマを挿入する関数
+    function formatAmount(amount) {
+      return amount.toLocaleString();
+    }
+
+    // APIからデータを取得する関数
+    function fetchData(accountNumber) {
+      // Check if account number is 14 digits
+      if (!/^\d{14}$/.test(accountNumber)) {
+        alert('口座番号は14桁の数字でなければなりません。');
+        return;
+      }
+
+      console.log('Account number:', accountNumber);
+
+      // APIのエンドポイントURL
+      var apiEndpoint = "http://localhost:8081/api/data/"+ accountNumber; 
+      console.log('API endpoint:', apiEndpoint);
+
+      // XMLHttpRequestを使用してAPIにリクエストを送信
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", apiEndpoint, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // リクエストが成功し、データを取得できた場合の処理
+          var response = JSON.parse(xhr.responseText);
+
+          // データの準備
+          var statementData = response;
+          console.log('Response2:', response);
+
+          // 入金・出金データの集計
+          var depositData = [];
+          var expenseData = [];
+          var dates = [];
+          var depositCumulative = 0;
+          var expenseCumulative = 0;
+
+          statementData.forEach(function(transaction) {
+            dates.push(formatDate(transaction.TRX_Date));
+            if (transaction.Category_Code.toString().startsWith('9')) {
+              depositCumulative += transaction.AMOUNT;
+              depositData.push(depositCumulative);
+              expenseData.push(expenseCumulative);
+            } else {
+              expenseCumulative += transaction.AMOUNT;
+              expenseData.push(expenseCumulative);
+              depositData.push(depositCumulative);
+            }
+          });
+
+          // グラフの描画
+          var options = {
+            chart: {
+              type: 'line', // Change from 'bar' to 'line'
+              height: '300px'
+            },
+            series: [
+              {
+                name: "入金累積額",
+                data: depositData
+              },
+              {
+                name: "出金累積額",
+                data: expenseData
+              }
+            ],
+            colors: ['#000000', '#FF0000'],
+            xaxis: {
+              categories: dates
+            },
+            yaxis: {
+              forceNiceScale: true,
+              min: 0,
+              max: Math.max(...depositData, ...expenseData)
+            }
+          };
+          var chart = new ApexCharts(document.querySelector("#chart-container"), options);
+          chart.render();
+
+          // テーブルにデータを表示
+          var tbody = document.getElementById("data");
+          statementData.forEach(function(transaction) {
+            var row = document.createElement('tr');
+            var dateCell = document.createElement('td');
+            var descCell = document.createElement('td');
+            var amountCell = document.createElement('td');
+            var typeCell = document.createElement('td');
+
+            dateCell.textContent = formatDate(transaction.TRX_Date);
+            descCell.textContent = transaction.TRX_Category;
+            amountCell.textContent = formatAmount(transaction.AMOUNT);
+            typeCell.textContent = transaction.Category_Code.toString().startsWith('9') ? '入金' : '出金';
+
+            // 追加：金額セルに'amount'クラスを追加
+            amountCell.className = 'amount';
+
+            row.appendChild(dateCell);
+            row.appendChild(descCell);
+            row.appendChild(amountCell);
+            row.appendChild(typeCell);
+            tbody.appendChild(row);
+          });
+        }
+      };
+      xhr.send();
+    }
+
+    // Fetch the current date and display it in the header
+    const date = new Date();
+    const month = date.getMonth() + 1;  // getMonth() returns 0-based month index
+    const year = date.getFullYear();
+    document.getElementById('header').textContent = `お客様入出金明細 - ${year}年${month}月${date.getDate()}日`;
+  </script>
+</body>
+</html>
+
+</html>
