@@ -18,9 +18,11 @@ MuleSoftを使用したアプリケーション開発の手順を一覧したも
 
 開発を実施する前に下記のプロダクトを準備しておく必要があります。
 
+https://docs.mulesoft.com/jp/connector-devkit/3.9/setting-up-your-dev-environment
+
 - AnyPointPlatform
 - AnyPointStudio
 - ChatGPT(V4がのぞましいが、V3.5でも対応可能)
 
-下記トレーニング受講の前提として上記のプロダクトを導入します。  
+また開発を始めるにあたり下記トレーニングの受講を推奨します。  
 [https://training.mulesoft.com/course/development-fundamentals-mule4-japanese](https://training.mulesoft.com/course/development-fundamentals-mule4-japanese)
