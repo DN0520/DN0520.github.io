@@ -1,5 +1,5 @@
 # dn0520.github.io
-ISID DEC内のMuleSoft推進チームの共有リポジトリ
+Mule-Solutioning pjのWEBサーバーとしてGITHUB PAGESを活用
 ### MuleSoftアプリ開発ガイドライン
 　https://dn0520.github.io/Desktop/A.MuleSoft/devgideMD/DevGuide3.html
 ### MuleSoftアプリ個人取引明細キャッシュフローシステム
