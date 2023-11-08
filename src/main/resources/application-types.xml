@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="TransactionPayload" format="java">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+output application/java
+type TransactionPayload = {
+    Account_Number: String,
+    Account_Month: Date,
+    TRX_Date: Date,
+    Category_Code: String,
+    TRX_Category: String,
+    TRX_TYPE: String,
+    AMOUNT: Integer
+}]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#TransactionPayload">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="TransactionPayload"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#de2bf1b6-a019-4931-8d23-0fd614871d90">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="TransactionPayload"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

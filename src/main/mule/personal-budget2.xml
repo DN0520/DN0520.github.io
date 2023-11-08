@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+    <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="27969ced-4617-4e2e-9287-84370d57f3c7" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="735092b0-5b62-4b68-bd98-7d4ba71da789" >
+		<db:my-sql-connection host="localhost" port="3306" user="admin" password="admin" database="personal_budget_DB" />
+	</db:config>
+	<flow name="trial-mysql-main">
+        <http:listener config-ref="HTTP_Listener_config" path="/api/data/{Account_Number}" allowedMethods="GET">
+            <http:response>
+            <http:headers>#[{
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }]</http:headers>
+        </http:response>
+        <http:error-response>
+            <http:headers>#[{
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }]</http:headers>
+        </http:error-response>
+        </http:listener>
+        <db:select doc:name="Select" doc:id="114f738e-94fc-43c3-8dd0-20e1f98e553c" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT 
+  personal_budget_tbl1.Account_Number,
+  personal_budget_tbl1.Account_Month,
+  personal_budget_tbl1.TRX_Date,
+  personal_budget_tbl1.Category_Code,
+  personal_budget_tbl1.TRX_Category,
+  personal_budget_tbl1.TRX_TYPE,
+  personal_budget_tbl1.AMOUNT
+FROM 
+  personal_budget_tbl1 
+LEFT JOIN 
+  personal_budget_tbl2 
+ON 
+  personal_budget_tbl1.Account_Number = personal_budget_tbl2.Account_Number AND personal_budget_tbl1.TRX_Date = personal_budget_tbl2.TRX_Date
+WHERE 
+  personal_budget_tbl1.TRX_Date >= CURDATE() AND personal_budget_tbl1.Account_Number = :Account_Number
+
+UNION
+
+SELECT 
+  personal_budget_tbl2.Account_Number,
+  personal_budget_tbl2.Account_Month,
+  personal_budget_tbl2.TRX_Date,
+  personal_budget_tbl2.Category_Code,
+  personal_budget_tbl2.TRX_Category,
+  personal_budget_tbl2.TRX_TYPE,
+  personal_budget_tbl2.AMOUNT
+FROM 
+  personal_budget_tbl1 
+RIGHT JOIN 
+  personal_budget_tbl2 
+ON 
+  personal_budget_tbl1.Account_Number = personal_budget_tbl2.Account_Number AND personal_budget_tbl1.TRX_Date = personal_budget_tbl2.TRX_Date
+WHERE 
+  personal_budget_tbl2.TRX_Date < CURDATE() AND personal_budget_tbl2.Account_Number = :Account_Number
+
+ORDER BY 
+  TRX_Date;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'Account_Number' : attributes.uriParams.Account_Number}]]]></db:input-parameters>
+		</db:select>
+		<!-- DB select query is replaced with set-payload that returns a mock payload -->
+		<ee:transform doc:name="Transform Message" doc:id="de2bf1b6-a019-4931-8d23-0fd614871d90" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+					output application/json
+					---
+					payload map ( payload01 , indexOfPayload01 ) -> {
+					Account_Number: payload01.Account_Number as String default "",
+					Account_Month: payload01.Account_Month as String default "",
+					TRX_Date: payload01.TRX_Date as String default "",
+					Category_Code: payload01.Category_Code as String default "",
+					TRX_Category: payload01.TRX_Category as String default "",	
+					TRX_TYPE: payload01.TRX_TYPE as String default "",
+					AMOUNT: payload01.AMOUNT as Number default 0
+					}
+
+		]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+</mule>

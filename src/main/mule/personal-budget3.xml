@@ -1,0 +1,89 @@
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"> 
+
+    <db:config name="Database_Config3" doc:name="Database Config" doc:id="087d3214-a8dc-40ea-b735-583d44649a81" >
+        <db:my-sql-connection host="localhost" port="3306" user="admin" password="admin" database="personal_budget_DB" />
+    </db:config>
+
+    <http:listener-config name="HTTP_Listener_config3" doc:name="HTTP Listener config" doc:id="aac05fda-bdb9-49cc-b56a-edc6be4abaea" >
+        <http:listener-connection host="0.0.0.0" port="8082"/>
+    </http:listener-config>
+
+    <!-- 入出金一覧を取得するフロー -->
+    <flow name="getTransactionsFlow" doc:name="getTransactionsFlow">
+        <http:listener doc:name="Listener" config-ref="HTTP_Listener_config3" path="/getTransactions//{Account_Number}">
+            <http:response>
+                <http:headers><![CDATA[#[{
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET,POST",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }]]]></http:headers>
+            </http:response>
+            <http:error-response>
+                <http:headers><![CDATA[#[{
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET,POST",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <db:select doc:name="Select" config-ref="Database_Config3">
+            <db:sql><![CDATA[SELECT 
+  personal_budget_tbl1.Account_Number,
+  personal_budget_tbl1.Account_Month,
+  personal_budget_tbl1.TRX_Date,
+  personal_budget_tbl1.Category_Code,
+  personal_budget_tbl1.TRX_Category,
+  personal_budget_tbl1.TRX_TYPE,
+  personal_budget_tbl1.AMOUNT
+FROM 
+  personal_budget_tbl1
+WHERE  
+  personal_budget_tbl1.Account_Number = :Account_Number]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'Account_Number' : attributes.uriParams.Account_Number}]]]></db:input-parameters>
+        </db:select>
+		<ee:transform doc:name="Transform Message" doc:id="6bbf85cd-eee6-4c59-8825-280d516ce8f2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+					---
+					payload map ( payload01 , indexOfPayload01 ) -> {
+					Account_Number: payload01.Account_Number as String default "",
+					Account_Month: payload01.Account_Month as String default "",
+					TRX_Date: payload01.TRX_Date as String default "",
+					Category_Code: payload01.Category_Code as String default "",
+					TRX_Category: payload01.TRX_Category as String default "",	
+					TRX_TYPE: payload01.TRX_TYPE as String default "",
+					AMOUNT: payload01.AMOUNT as Number default 0
+					}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+
+    <!-- amountを更新するフロー -->
+    <flow name="updateTransactionFlow" doc:name="updateTransactionFlow">
+        <http:listener doc:name="Listener" config-ref="HTTP_Listener_config3" path="/updateTransaction" allowedMethods="POST" />
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <db:update doc:name="Update" config-ref="Database_Config3">
+            <db:sql><![CDATA[UPDATE personal_budget_tbl2 SET amount = :amount WHERE id = :id]]></db:sql>
+            <db:input-parameters><![CDATA[
+                #[{
+                    id: payload.id,
+                    amount: payload.amount,
+                }]
+            ]]></db:input-parameters>
+        </db:update>
+        <set-payload value="更新OK" doc:name="Set Payload" />
+    </flow>
+
+</mule>
+

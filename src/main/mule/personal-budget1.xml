@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="45480632-8f38-48bf-9140-d1176d6efb90" basePath="/GET https://www.googleapis.com/calendar/v3/calendars/calendarId/events" />
+	<file:config name="File_Config" doc:name="File Config" doc:id="75f6a3d0-ffc0-4042-9fac-76b4f2960041" >
+		<file:connection workingDir="C:\Personal_budget_plans" />
+	</file:config>
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="2183da2e-bd15-4d0c-9ffc-c963742dfbd0" >
+		<db:my-sql-connection host="localhost" port="3306" user="admin" password="admin" database="personal_budget_DB" />
+	</db:config>
+	<flow name="personal-budgetFlow" doc:id="90b555f2-3e6c-41d5-81bf-9f90c4acb99c" >
+		<file:listener doc:name="On New or Updated File" doc:id="c4274aec-6bcc-4d7b-aa9b-f21cc6af8190" config-ref="File_Config" moveToDirectory="C:\Personal_budget_plans_bkp" directory="C:\Personal_budget_plans">
+			<scheduling-strategy >
+				<cron expression="*/15 * * * *"/>
+			</scheduling-strategy>
+		</file:listener>
+		<file:read doc:name="Read" doc:id="56d1039d-72a2-44c2-9b7d-64ccd20c9be8" path="C:\Personal_budget_plans" config-ref="File_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="22879d65-8a5f-47a7-a26c-078b75b5e0f5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+read(payload, "application/csv") map (row) -> {
+    Account_Number: row.Account_Number,
+    Account_Month: row.Account_Month,
+    TRX_Date: row.TRX_Date,
+    Category_Code: row.Category_Code,
+    TRX_Category: row.TRX_Category,
+    TRX_TYPE: row.TRX_TYPE,
+    AMOUNT: row.AMOUNT as Number
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+        <foreach>
+    		<db:insert doc:name="Insert" doc:id="2a122a68-cdd7-4018-ac26-1796d6d516bd" config-ref="Database_Config1">
+    			<db:sql ><![CDATA[
+    				INSERT INTO personal_budget_tbl1(Account_Number, Account_Month, TRX_Date, Category_Code, TRX_Category, TRX_TYPE, AMOUNT)
+    				VALUES (:Account_Number, :Account_Month, :TRX_Date, :Category_Code, :TRX_Category, :TRX_TYPE, :AMOUNT)
+    				ON DUPLICATE KEY UPDATE
+    				Account_Month = :Account_Month, TRX_Date = :TRX_Date, Category_Code = :Category_Code,
+    				TRX_Category = :TRX_Category, TRX_TYPE = :TRX_TYPE, AMOUNT = :AMOUNT
+    			]]></db:sql>
+    			<db:input-parameters ><![CDATA[{
+    				"Account_Number" : payload.Account_Number,
+    				"Account_Month" : payload.Account_Month,
+    				"TRX_Date" : payload.TRX_Date,
+    				"Category_Code" : payload.Category_Code,
+    				"TRX_Category" : payload.TRX_Category,
+    				"TRX_TYPE" : payload.TRX_TYPE,
+    				"AMOUNT" : payload.AMOUNT
+    			}]]></db:input-parameters>
+    		</db:insert>
+        </foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="d6d502d5-ffd4-437a-a0c1-052a66e76894" />
+	</flow>
+</mule>

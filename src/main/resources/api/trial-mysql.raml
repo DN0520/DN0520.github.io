@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: trial-mysql
+baseUri: http://0.0.0.0:8081/
+
+/personalBudget:
+  get:
+    description: Retrieves personal budget data based on Account Number
+    queryParameters:
+      Account_number:
+        description: Account number for the personal budget
+        type: string
+        required: true
+    responses: 
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                 "Account_Number": "12345678901234",
+                 "Account_Month": "202306",
+                 "TRX_Date": "20230601",
+                 "Category_Code": "008",
+                 "TRX_Category": "rent house",
+                 "TRX_TYPE": "deposit",
+                  "AMOUNT": 200000
+                  }
